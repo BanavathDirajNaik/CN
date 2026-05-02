@@ -1,13 +1,25 @@
-apiVersion: 1
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  # attach these labels to all time series scraped from this Prometheus instance
+  external_labels:
+    monitor: 'network-analyzer'
 
-datasources:
-  - name: Prometheus
-    type: prometheus
-    uid: prometheus-ds
-    access: proxy
-    url: http://prometheus:9090
-    isDefault: true
-    editable: false
-    jsonData:
-      timeInterval: "15s"
-      httpMethod: POST
+rule_files: []
+
+scrape_configs:
+
+  # ── Android network exporter (this Python script) ──────────────────────────
+  - job_name: 'android_network'
+    static_configs:
+      - targets: ['host.docker.internal:8000']   # use 'localhost:8000' if running outside Docker
+        labels:
+          device: 'android'
+    scrape_interval: 15s
+    scrape_timeout:  12s
+    metrics_path: /metrics
+
+  # ── Prometheus self-monitoring ─────────────────────────────────────────────
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
