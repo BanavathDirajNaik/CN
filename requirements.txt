@@ -1,0 +1,3 @@
+# No third-party libs are strictly required — the exporter uses only stdlib.
+# Optional: install prometheus_client for richer metric features.
+prometheus_client>=0.17.0
